@@ -1,0 +1,51 @@
+{% extends 'blog/base.html' %}
+{% block title %}Delete Post — inkwell{% endblock %}
+
+{% block content %}
+
+<div style="max-width: 500px; margin: 4rem auto; text-align: center;">
+
+  <!-- Warning icon -->
+  <div style="
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--bg-danger);
+    border: 1px solid var(--border-danger);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 1.5rem;
+  ">
+    ✕
+  </div>
+
+  <h1 class="font-display text-3xl mb-3" style="color: var(--text-primary);">Delete this post?</h1>
+
+  <p style="color: var(--text-subtle); font-size: 0.95rem; margin-bottom: 0.5rem;">
+    You are about to permanently delete:
+  </p>
+  <p style="color: var(--accent); font-size: 1.1rem; font-weight: 500; margin-bottom: 2rem;">
+    "{{ post.title }}"
+  </p>
+
+  <p style="color: var(--text-faint); font-size: 0.82rem; margin-bottom: 2rem;">
+    This action cannot be undone.
+  </p>
+
+  <div style="
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex; gap: 12px; justify-content: center;
+  ">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-danger" style="cursor: pointer; background: none; font-size: 0.9rem;">
+        Yes, Delete Forever
+      </button>
+    </form>
+    <a href="/post/{{ post.id }}/" class="btn-ghost" style="font-size: 0.9rem;">Cancel</a>
+  </div>
+
+</div>
+
+{% endblock %}

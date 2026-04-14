@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}My Blog{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============================================
+         🎨 THEME VARIABLES — sab colors yahan hain
+         Koi bhi color badalna ho toh sirf yahan badlo
+         ============================================ */
+      :root {
+        /* --- Backgrounds --- */
+        --bg-base:       #f5f2ed;   /* page background */
+        --bg-nav:        #faf8f5;   /* navbar */
+        --bg-card:       #ffffff;   /* cards, form panels */
+        --bg-input:      #f0ece6;   /* inputs, toast */
+        --bg-subtle:     #e8e2d9;   /* tags background */
+        --bg-danger:     #fff0f0;   /* delete warning circle */
+
+        /* --- Borders --- */
+        --border-default: #e0d9cf;  /* dividers, card borders */
+        --border-input:   #cec6bb;  /* input field borders */
+        --border-danger:  #f5c0c0;  /* delete warning circle border */
+
+        /* --- Text --- */
+        --text-primary:  #1a1714;   /* headings, main text */
+        --text-body:     #3d3830;   /* article body copy */
+        --text-muted:    #7a6f62;   /* nav links, ghost btn */
+        --text-subtle:   #9e9185;   /* secondary meta */
+        --text-faint:    #b5a99b;   /* footer, help text */
+
+        /* --- Accent (gold) --- */
+        --accent:        #a07830;   /* primary buttons, tags, links */
+        --accent-hover:  #8a6425;   /* primary button hover */
+
+        /* --- Danger (red) --- */
+        --danger:        #c04040;   /* delete button, error text */
+      }
+
+      /* ============================================
+         Base styles using variables
+         ============================================ */
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg-base);
+        color: var(--text-primary);
+      }
+      h1, h2, h3, .font-display {
+        font-family: "Playfair Display", serif;
+      }
+      .card-hover {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: var(--bg-base);
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 6px;
+        transition: background 0.15s;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+      .btn-danger {
+        color: var(--danger);
+        font-weight: 500;
+        padding: 0.4rem 1rem;
+        border: 1px solid var(--danger);
+        border-radius: 6px;
+        transition: all 0.15s;
+        display: inline-block;
+      }
+      .btn-danger:hover {
+        background: var(--danger);
+        color: var(--bg-base);
+      }
+      .btn-ghost {
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 0.4rem 1rem;
+        border: 1px solid var(--border-input);
+        border-radius: 6px;
+        transition: all 0.15s;
+        display: inline-block;
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      input, textarea, select {
+        background: var(--bg-input);
+        border: 1px solid var(--border-input);
+        color: var(--text-primary);
+        border-radius: 8px;
+        padding: 0.6rem 0.9rem;
+        width: 100%;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        transition: border-color 0.15s;
+      }
+      input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .tag {
+        background: var(--bg-subtle);
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border-input);
+      }
+      .messages-toast {
+        position: fixed;
+        top: 1.25rem;
+        right: 1.25rem;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+
+    <!-- Navbar -->
+    <nav style="border-bottom: 1px solid var(--border-default); background: var(--bg-nav)">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="font-display text-2xl" style="color: var(--accent); letter-spacing: -0.02em">
+          ✦ inkwell
+        </a>
+        <div class="flex items-center gap-4">
+          <a href="/" class="text-sm" style="color: var(--text-muted)">All Posts</a>
+          <a href="/create/" class="btn-primary text-sm">+ New Post</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Django Messages (toasts) -->
+    {% if messages %}
+    <div class="messages-toast">
+      {% for message in messages %}
+      <div style="
+        background: var(--bg-input);
+        border: 1px solid {% if message.tags == 'error' %}var(--danger){% else %}var(--accent){% endif %};
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-size: 0.9rem;
+        color: {% if message.tags == 'error' %}var(--danger){% else %}var(--accent){% endif %};
+        max-width: 320px;
+      ">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-10">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer style="
+      border-top: 1px solid var(--border-default);
+      margin-top: 4rem;
+      padding: 2rem 0;
+      text-align: center;
+      color: var(--text-faint);
+      font-size: 0.8rem;
+    ">
+      inkwell &mdash; a simple blog &copy; {% now "Y" %}
+    </footer>
+
+  </body>
+</html>
