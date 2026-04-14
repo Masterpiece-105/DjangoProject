@@ -8,10 +8,8 @@
   ← Back to all posts
 </a>
 
-<!-- Article -->
 <article>
 
-  <!-- Hero image -->
   {% if post.image %}
   <div style="margin-bottom: 2.5rem; border-radius: 12px; overflow: hidden;">
     <img src="{{ post.image.url }}" alt="{{ post.title }}"
@@ -19,32 +17,68 @@
   </div>
   {% endif %}
 
-  <!-- Title + meta -->
   <header style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-default);">
     <h1 class="font-display" style="font-size: 3rem; line-height: 1.15; letter-spacing: -0.03em; color: var(--text-primary); margin-bottom: 1rem;">
       {{ post.title }}
     </h1>
     <div class="flex items-center gap-4">
-      {% if post.created_by %}
-      <span class="tag">{{ post.created_by }}</span>
-      {% endif %}
-      {% if post.created_at %}
-      <span style="color: var(--text-subtle); font-size: 0.85rem;">{{ post.created_at|date:"d M Y, H:i" }}</span>
-      {% endif %}
+      {% if post.created_by %}<span class="tag">{{ post.created_by }}</span>{% endif %}
+      {% if post.created_at %}<span style="color: var(--text-subtle); font-size: 0.85rem;">{{ post.created_at|date:"d M Y, H:i" }}</span>{% endif %}
     </div>
   </header>
 
-  <!-- Body -->
   <div style="font-size: 1.05rem; line-height: 1.85; color: var(--text-body); max-width: 680px;">
     {{ post.content|linebreaksbr }}
   </div>
 
-  <!-- Action buttons -->
   <div class="flex gap-3 mt-10" style="padding-top: 2rem; border-top: 1px solid var(--border-default);">
     <a href="/edit/{{ post.id }}/" class="btn-primary">Edit Post</a>
     <a href="/delete/{{ post.id }}/" class="btn-danger">Delete</a>
   </div>
 
 </article>
+
+<!-- ==================== COMMENTS ==================== -->
+<section style="margin-top: 4rem; max-width: 680px;">
+
+  <h2 class="font-display text-2xl mb-6" style="color: var(--text-primary);">
+    Comments ({{ comments.count }})
+  </h2>
+
+  {% if user.is_authenticated %}
+  <div style="background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+    <p style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;">
+      Comment as <span style="color: var(--accent);">{{ user.username }}</span>
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      {{ comment_form.content }}
+      <button type="submit" class="btn-primary" style="margin-top: 12px; cursor: pointer;">Post Comment</button>
+    </form>
+  </div>
+  {% else %}
+  <div style="background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 12px; padding: 1.25rem; margin-bottom: 2rem; text-align: center;">
+    <p style="color: var(--text-muted); font-size: 0.9rem;">
+      <a href="/login/" style="color: var(--accent);">Login</a> to leave a comment
+    </p>
+  </div>
+  {% endif %}
+
+  {% for comment in comments %}
+  <div style="border-bottom: 1px solid var(--border-default); padding: 1.25rem 0;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+      <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--accent); font-weight: 600;">
+        {{ comment.user.username|first|upper }}
+      </div>
+      <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">{{ comment.user.username }}</span>
+      <span style="color: var(--text-faint); font-size: 0.78rem;">{{ comment.created_at|date:"d M Y, H:i" }}</span>
+    </div>
+    <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.6; padding-left: 42px;">{{ comment.content }}</p>
+  </div>
+  {% empty %}
+  <p style="color: var(--text-faint); font-size: 0.9rem; text-align: center; padding: 2rem 0;">No comments yet. Be the first!</p>
+  {% endfor %}
+
+</section>
 
 {% endblock %}

@@ -1,8 +1,33 @@
 from django import forms
 from .models import Post
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from .models import Comment
 
 class PostForm(forms.ModelForm):
-    class meta:
+    class Meta:
         model = Post
-        field = ['title', 'content', 'image']
+        fields = ['title', 'content', 'image']
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
         
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content' : forms.Textarea(attrs={
+                'row' : 3, 'placeholder' : 'Write a comment...'
+            })
+        }
+        labels = {'comment' : 'Comment'}  
+        
+    
+    
+    
+    

@@ -1,0 +1,42 @@
+{% extends 'blog/base.html' %}
+{% block title %}Profile — inkwell{% endblock %}
+
+{% block content %}
+
+<!-- Profile header -->
+<div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-default); display: flex; align-items: center; gap: 1.5rem;">
+  <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-subtle); border: 1px solid var(--border-input); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent);">
+    {{ request.user.username|first|upper }}
+  </div>
+  <div>
+    <h1 class="font-display text-3xl" style="color: var(--text-primary);">{{ request.user.username }}</h1>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;">{{ request.user.email }}</p>
+    <p style="color: var(--text-faint); font-size: 0.8rem;">Joined {{ request.user.date_joined|date:"d M Y" }}</p>
+  </div>
+</div>
+
+<!-- User's posts -->
+<div>
+  <p class="tag mb-4">Your Posts</p>
+
+  {% if user_posts %}
+  <div class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+    {% for post in user_posts %}
+    <article style="background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 10px; padding: 1.25rem;" class="card-hover">
+      <a href="/post/{{ post.id }}/">
+        <h2 class="font-display" style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.5rem;">{{ post.title }}</h2>
+      </a>
+      <p style="color: var(--text-subtle); font-size: 0.82rem;">{{ post.created_at|date:"d M Y" }}</p>
+      <div style="margin-top: 1rem; display: flex; gap: 8px;">
+        <a href="/edit/{{ post.id }}/" class="btn-ghost" style="font-size: 0.75rem; padding: 4px 10px;">Edit</a>
+        <a href="/delete/{{ post.id }}/" class="btn-danger" style="font-size: 0.75rem; padding: 4px 10px;">Delete</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="color: var(--text-faint);">You haven't written any posts yet. <a href="/create/" style="color: var(--accent);">Write one!</a></p>
+  {% endif %}
+</div>
+
+{% endblock %}
