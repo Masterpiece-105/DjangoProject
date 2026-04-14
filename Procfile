@@ -1,1 +1,1 @@
-web: gunicorn  inkwell.wsgi
+web: gunicorn config.wsgi:application
